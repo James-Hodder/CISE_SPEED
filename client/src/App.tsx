@@ -1,11 +1,11 @@
 import Header from "./components/Header";
-import HomePage from "./pages/start/StartPage";
+import Login from "./pages/login/Login";
 
 export default function App() {
   return (
     <div>
       <Header />
-      <HomePage />
+      <Login />
     </div>
   );
 }
