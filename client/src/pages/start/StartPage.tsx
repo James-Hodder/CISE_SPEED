@@ -1,3 +1,6 @@
+
+import React from "react";
+
 export default function StartPage() {
   return (
     <div className="flex justify-between items-center p-4">
@@ -24,6 +27,7 @@ export default function StartPage() {
           className="w-64 h-auto"
         />
       </div>
+      
     </div>
   );
 }

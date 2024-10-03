@@ -1,4 +1,5 @@
 import { useState } from "react";
+import './header.css';
 
 export default function Header() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -14,8 +15,8 @@ export default function Header() {
 
   return (
     <header
-      className={`flex items-center justify-between p-4 ${
-        isDarkMode ? "bg-gray-800 text-white" : "bg-orange-500 text-black"
+      className={`header-container flex items-center justify-between p-4 ${
+        isDarkMode ? "bg-gray-800 text-white" : "text-black"
       }`}
     >
       <div className="relative">
