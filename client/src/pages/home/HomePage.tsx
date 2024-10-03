@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 // Define the Article interface to match your fetched data
 interface Article {
@@ -13,7 +13,7 @@ interface Article {
   rating: number;
 }
 
-export default function HomePage() {
+const HomePage: React.FC = () => {
   const [articles, setArticles] = useState<Article[]>([]);
 
   useEffect(() => {
