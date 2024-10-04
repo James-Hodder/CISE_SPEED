@@ -1,4 +1,12 @@
 import React, { useEffect, useState } from "react";
+import {
+  Container,
+  Typography,
+  Card,
+  CardContent,
+  Button,
+  Grid,
+} from "@mui/material";
 
 // Define the Article interface to match your fetched data
 interface Article {
@@ -26,37 +34,37 @@ const HomePage: React.FC = () => {
   }, []);
 
   return (
-    
-    <div className="container mx-auto p-4">
-      <h1 className="text-3xl font-bold text-center mb-8">
-        Recommended Articles
-      </h1>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+    <Container maxWidth="lg" sx={{ padding: 4 }}>
+      <Typography variant="h3" component="h1" align="center" gutterBottom>
+        Articles
+      </Typography>
+      <Grid container spacing={4}>
         {articles.map((article) => (
-          <div
-            key={article._id}
-            className="bg-white shadow-md rounded-lg overflow-hidden hover:shadow-lg transition-shadow duration-300"
-          >
-            <div className="p-4">
-              <h2 className="text-xl font-semibold mb-2">{article.title}</h2>
-              <p className="text-gray-600 mb-4">{article.author}</p>
-              <p className="text-gray-800">
-                {article.content.substring(0, 100)}...
-              </p>
-              <p className="text-sm text-gray-500 mt-2">
-                Published: {new Date(article.date).toLocaleDateString()}
-              </p>
-            </div>
-            <div className="p-4 bg-gray-100">
-              <button className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition-colors">
+          <Grid item xs={12} sm={6} md={4} key={article._id}>
+            <Card variant="outlined" sx={{ height: "100%" }}>
+              <CardContent>
+                <Typography variant="h5" component="h2" gutterBottom>
+                  {article.title}
+                </Typography>
+                <Typography variant="body2" color="textSecondary" gutterBottom>
+                  {article.author}
+                </Typography>
+                <Typography variant="body1">
+                  {article.content.substring(0, 100)}...
+                </Typography>
+                <Typography variant="caption" color="textSecondary" mt={2}>
+                  Published: {new Date(article.date).toLocaleDateString()}
+                </Typography>
+              </CardContent>
+              <Button variant="contained" color="primary" sx={{ margin: 2 }}>
                 Read More
-              </button>
-            </div>
-          </div>
+              </Button>
+            </Card>
+          </Grid>
         ))}
-      </div>
-    </div>
+      </Grid>
+    </Container>
   );
-}
+};
 
 export default HomePage;

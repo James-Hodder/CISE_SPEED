@@ -1,14 +1,12 @@
 import React, { useState } from "react";
-import './header.css';
-
-
-// import {HomePage, InsertArticle, AboutPage, StartPage, ArticleCatagory} from '../../pages';
+import { Link } from "react-router-dom"; // Import Link
+import "./header.css";
 
 const Header: React.FunctionComponent = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
 
-  //dark mode and light mode toggle 
+  // Dark mode and light mode toggle
   const toggleDropdown = () => {
     setIsDropdownOpen((prev) => !prev);
   };
@@ -16,17 +14,14 @@ const Header: React.FunctionComponent = () => {
   const toggleDarkMode = () => {
     setIsDarkMode((prev) => !prev);
   };
-  
-  // body of what we see
+
+  // Body of what we see
   return (
-  
     <header
       className={`header-container flex items-center justify-between p-4 ${
         isDarkMode ? "bg-gray-800 text-white" : "text-black"
       }`}
-    > 
-
-      
+    >
       <div className="relative">
         <button
           onClick={toggleDropdown}
@@ -38,64 +33,72 @@ const Header: React.FunctionComponent = () => {
         >
           <img src="/header/menu.svg" alt="Menu" className="w-6 h-6 mr-2" />
         </button>
-        
-        {/* drop down is open  */}
+
+        {/* Dropdown is open */}
         {isDropdownOpen && (
           <div className="absolute left-0 mt-2 w-48 bg-white text-black rounded shadow-lg">
             <ul>
               <li className="px-4 py-2 hover:bg-gray-200 cursor-pointer">
-                Option 1
+                <Link to="/" className="block w-full text-left">
+                  StartPage
+                </Link>
               </li>
               <li className="px-4 py-2 hover:bg-gray-200 cursor-pointer">
-                Option 2
-              </li>
-              <li className="px-4 py-2 hover:bg-gray-200 cursor-pointer">
-                Option 3
+                <Link to="/Settings" className="block w-full text-left">
+                  Settings
+                </Link>
               </li>
             </ul>
           </div>
         )}
       </div>
-      
 
-      {/* page names to route to */}
+      {/* Page names to route to */}
       <nav className="flex space-x-8">
-        
-        <a
-          href="/"
+        <Link
+          to="/HomePage"
           className={`hover:${isDarkMode ? "text-gray-300" : "text-gray-600"}`}
         >
           Home
-        </a>
-        <a
-          href="/categories"
-          className={`hover:${isDarkMode ? "text-gray-300" : "text-gray-600"}`}
-        >
-          Categories
-        </a>
-        <a
-          href="/about"
+        </Link>
+        <Link
+          to="/about"
           className={`hover:${isDarkMode ? "text-gray-300" : "text-gray-600"}`}
         >
           About
-        </a>
+        </Link>{" "}
+        <Link
+          to="/InsertPage"
+          className={`hover:${isDarkMode ? "text-gray-300" : "text-gray-600"}`}
+        >
+          Add Article
+        </Link>
       </nav>
 
-      <button
-        onClick={toggleDarkMode}
-        className={`px-4 py-2 rounded ${
-          isDarkMode ? "bg-gray-700 text-white" : "bg-yellow-100 text-black"
-        } transition`}
-      >
-        {isDarkMode ? "Light Mode" : "Dark Mode"}
-      </button>
+      <div className="flex items-center space-x-4">
+        <Link
+          to="/RegisterPage"
+          className={`hover:${isDarkMode ? "text-gray-300" : "text-gray-600"}`}
+        >
+          Register
+        </Link>
+        <Link
+          to="/LoginPage"
+          className={`hover:${isDarkMode ? "text-gray-300" : "text-gray-600"}`}
+        >
+          Login
+        </Link>
+        <button
+          onClick={toggleDarkMode}
+          className={`px-4 py-2 rounded ${
+            isDarkMode ? "bg-gray-700 text-white" : "bg-yellow-100 text-black"
+          } transition`}
+        >
+          {isDarkMode ? "Light Mode" : "Dark Mode"}
+        </button>
+      </div>
     </header>
-
-    // route logic bellow this will render different pages based on the href
-    
-    
-    
   );
-}
+};
 
 export default Header;
