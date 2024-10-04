@@ -1,7 +1,7 @@
 // Card.tsx
 import React from 'react';
 import { Card as MuiCard, CardContent, Typography } from '@mui/material';
-import './card.css'; // Ensure this file is present
+import './cards.css'; // Ensure this file is present
 
 interface CardProps {
   title: string;
