@@ -26,7 +26,7 @@ mongoose
 
 // Define Article Schema and Model
 const articleSchema = new mongoose.Schema({
-  id: Number,
+  id: Number, // Ensure this is unique if you're using it
   title: String,
   author: String,
   date: Date,
@@ -34,6 +34,7 @@ const articleSchema = new mongoose.Schema({
   tags: [String],
   isApproved: Boolean,
   rating: Number,
+  views: { type: Number, default: 0 }, // Add views field with default value
 });
 
 const Article = mongoose.model("Article", articleSchema);
@@ -48,13 +49,24 @@ app.get("/api/articles", async (req, res) => {
   }
 });
 
-// Route to get a single article by ID
+// Route to get a single article by ID (_id or custom id)
 app.get("/api/articles/:id", async (req, res) => {
   try {
-    const article = await Article.findOne({ id: req.params.id });
+    // Check if the ID is a MongoDB _id or custom id field
+    const query = mongoose.Types.ObjectId.isValid(req.params.id)
+      ? { _id: req.params.id }
+      : { id: req.params.id };
+    
+    const article = await Article.findOne(query);
+    
     if (!article) {
       return res.status(404).json({ error: "Article not found" });
     }
+
+    // Increment views count when article is fetched
+    article.views += 1;
+    await article.save();
+
     res.json(article);
   } catch (error) {
     res.status(500).json({ error: "Failed to fetch the article" });
