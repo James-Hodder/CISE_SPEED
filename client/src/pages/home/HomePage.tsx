@@ -7,6 +7,7 @@ import {
   Button,
   Grid,
 } from "@mui/material";
+import { Link } from "react-router-dom"; // Import Link for navigation
 
 // Define the Article interface to match your fetched data
 interface Article {
@@ -56,7 +57,14 @@ const HomePage: React.FC = () => {
                   Published: {new Date(article.date).toLocaleDateString()}
                 </Typography>
               </CardContent>
-              <Button variant="contained" color="primary" sx={{ margin: 2 }}>
+              {/* Wrap the button in a Link to navigate to the detail page */}
+              <Button
+                component={Link}
+                to={`/article/${article._id}`}
+                variant="contained"
+                color="primary"
+                sx={{ margin: 2 }}
+              >
                 Read More
               </Button>
             </Card>

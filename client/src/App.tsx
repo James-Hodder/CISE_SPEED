@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { HomePage, AboutPage, StartPage, InsertArticle } from "./pages";
 import RegisterPage from "./pages/login/RegisterPage";
 import LoginPage from "./pages/login/LoginPage";
+import ArticleDetail from "./pages/article/ArticleDetail";
 
 const App: React.FC = () => {
   return (
@@ -15,9 +16,8 @@ const App: React.FC = () => {
         <Route path="/InsertPage" element={<InsertArticle />} />
         <Route path="/RegisterPage" element={<RegisterPage />} />
         <Route path="/LoginPage" element={<LoginPage />} />
-        {/* <Route path="/ArticleCategories" element={<ArticleCategories />} /> */}
         <Route path="/AboutPage" element={<AboutPage />} />
-        {/* <Route path="/DatabasePage" element={<DatabasePage />} /> */}
+        <Route path="/article/:id" element={<ArticleDetail />} /> {/* Detail Page */}
       </Routes>
     </Router>
   );
