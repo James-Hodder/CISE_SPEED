@@ -1,5 +1,5 @@
 // pages/articles/index.tsx
-import { GetServerSideProps, NextPage } from "next";
+import { GetServerSideProps } from "next";
 import {
   Table,
   TableHead,
@@ -11,16 +11,18 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { Article } from "../../types/Article"; // Import your Article type
 import { useState } from "react";
+import { Article } from "../../types/Article"; // Import your Article type
 
 type ArticlesProps = {
-  articles: Article[]; // Use your Article type
+  articles: Article[]; // Define the type for your articles
 };
 
-const Articles: NextPage<ArticlesProps> = ({ articles }) => {
+// The main Articles component, which receives the articles as props
+export default function Articles({ articles }: ArticlesProps) {
   const [searchQuery, setSearchQuery] = useState("");
 
+  // Filter articles based on search query
   const filteredArticles = articles.filter(
     (article) =>
       article.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -34,7 +36,7 @@ const Articles: NextPage<ArticlesProps> = ({ articles }) => {
         All Published Articles
       </Typography>
 
-      {/* Search bar */}
+      {/* Search input */}
       <TextField
         label="Search by title, author or date"
         variant="outlined"
@@ -44,7 +46,7 @@ const Articles: NextPage<ArticlesProps> = ({ articles }) => {
         onChange={(e) => setSearchQuery(e.target.value)}
       />
 
-      {/* Table container */}
+      {/* Table to display articles */}
       <TableContainer component={Paper}>
         <Table>
           <TableHead>
@@ -53,7 +55,6 @@ const Articles: NextPage<ArticlesProps> = ({ articles }) => {
               <TableCell>Author</TableCell>
               <TableCell>Date</TableCell>
               <TableCell>Rating</TableCell>
-              <TableCell>Approved</TableCell>
               <TableCell>Tags</TableCell>
             </TableRow>
           </TableHead>
@@ -66,7 +67,6 @@ const Articles: NextPage<ArticlesProps> = ({ articles }) => {
                   {new Date(article.date).toLocaleDateString()}
                 </TableCell>
                 <TableCell>{article.rating}</TableCell>
-                <TableCell>{article.isApproved ? "Yes" : "No"}</TableCell>
                 <TableCell>{article.tags.join(", ")}</TableCell>
               </TableRow>
             ))}
@@ -75,22 +75,25 @@ const Articles: NextPage<ArticlesProps> = ({ articles }) => {
       </TableContainer>
     </div>
   );
-};
+}
 
-// Fetch articles from the API and pass them as props
-export const getServerSideProps: GetServerSideProps<
-  ArticlesProps
-> = async () => {
-  const res = await fetch("http://localhost:5000/api/articles"); // Adjust the API URL if necessary
+// Fetch articles server-side, only including those that are approved
+export const getServerSideProps: GetServerSideProps = async () => {
+  const res = await fetch("http://localhost:5000/api/articles"); // Fetch articles from your API
   const articles = await res.json();
+
+  // Only pass articles where `isApproved` is true
+  const approvedArticles = articles.filter(
+    (article: any) => article.isApproved
+  );
 
   return {
     props: {
-      articles: articles.map((article: any) => ({
+      articles: approvedArticles.map((article: any) => ({
         id: article.id,
         title: article.title,
         author: article.author,
-        date: new Date(article.date).toISOString(), // Convert Date to a string
+        date: new Date(article.date).toISOString(),
         content: article.content,
         tags: article.tags,
         isApproved: article.isApproved,
@@ -99,5 +102,3 @@ export const getServerSideProps: GetServerSideProps<
     },
   };
 };
-
-export default Articles;

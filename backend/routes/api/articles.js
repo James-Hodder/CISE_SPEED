@@ -37,16 +37,29 @@ router.get("/:id", (req, res) => {
 });
 
 // @route POST api/articles
-// @description Add/save article
+// @description Add/save article and auto-increment ID
 // @access Public
-router.post("/", express.json(), (req, res) => {
-  Article.create(req.body)
-    .then((article) =>
-      res.status(201).json({ msg: "Article added successfully", article })
-    )
-    .catch((err) =>
-      res.status(400).json({ error: "Unable to add this article" })
-    );
+router.post("/", express.json(), async (req, res) => {
+  try {
+    // Find the current highest id in the database
+    const lastArticle = await Article.findOne().sort({ id: -1 });
+
+    // Format the date to 'YYYY-MM-DD'
+    const formattedDate = new Date(req.body.date).toISOString().split("T")[0]; // Keep only the date part
+
+    const newArticle = new Article({
+      ...req.body,
+      date: formattedDate, // Now it will be stored as a string in 'YYYY-MM-DD' format
+      id: lastArticle ? lastArticle.id + 1 : 1, // Increment the highest ID, or set to 1 if no articles exist
+    });
+
+    await newArticle.save();
+    res
+      .status(201)
+      .json({ msg: "Article added successfully", article: newArticle });
+  } catch (err) {
+    res.status(400).json({ error: "Unable to add this article" });
+  }
 });
 
 // @route PUT api/articles/:id
