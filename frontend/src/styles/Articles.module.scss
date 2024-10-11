@@ -45,7 +45,8 @@
   color: #ffffff;
 }
 
-.articleTable th, .articleTable td {
+.articleTable th,
+.articleTable td {
   padding: 1em;
   text-align: left;
   border-bottom: 1px solid #d1d5db;
@@ -62,7 +63,6 @@
 .articleTable tbody tr:hover {
   background-color: #e5e7eb; /* Row hover effect */
 }
-
 
 /* View Button Styling */
 .button-view {
