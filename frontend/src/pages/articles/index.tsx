@@ -81,7 +81,7 @@ const Articles: NextPage<ArticlesProps> = ({ articles }) => {
 export const getServerSideProps: GetServerSideProps<
   ArticlesProps
 > = async () => {
-  const res = await fetch("http://localhost:5000/api/articles"); // Adjust the API URL if necessary
+  const res = await fetch("http://localhost:5001/api/articles"); // Adjust the API URL if necessary
   const articles = await res.json();
 
   return {
