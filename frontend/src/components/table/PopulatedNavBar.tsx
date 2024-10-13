@@ -1,10 +1,15 @@
 // components/NavBar/PopulatedNavBar.tsx
 import { IoMdArrowDropdown } from "react-icons/io";
-import { AppBar, Toolbar, Box, Container } from "@mui/material";
+import { AppBar, Toolbar, Box, Container, Button } from "@mui/material";
 import NavDropdown from "../nav/NavDropDown"; // Corrected path
 import NavItem from "../nav/NavItem"; // Corrected path
+import { FC } from "react";
 
-const PopulatedNavBar = () => {
+interface PopulatedNavBarProps {
+  toggleColorMode: () => void; // Define the type for toggleColorMode
+}
+
+const PopulatedNavBar: FC<PopulatedNavBarProps> = ({ toggleColorMode }) => {
   return (
     <AppBar position="static">
       <Container maxWidth="xl">
@@ -35,6 +40,16 @@ const PopulatedNavBar = () => {
           <Box ml={4}>
             {/* Adds spacing for "Registration" */}
             <NavItem route="/login/registrationPage">Register</NavItem>
+          </Box>
+          <Box ml={4}>
+            {/* Button to toggle theme */}
+            <Button
+              onClick={toggleColorMode}
+              variant="contained"
+              style={{ backgroundColor: "primary.main", color: "white" }}
+            >
+              Toggle Theme
+            </Button>
           </Box>
         </Toolbar>
       </Container>
