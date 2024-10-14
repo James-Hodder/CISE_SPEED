@@ -1,10 +1,49 @@
-import React from "react";
-import { Container, TextField, Button, Typography, Box } from "@mui/material";
+import React, { useState } from "react";
+import { Container, TextField, Button, Typography, Box, Alert } from "@mui/material";
 
 export default function RegistrationPage() {
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    // Handle registration logic here (e.g., send data to API)
+
+    if (password !== confirmPassword) {
+      setErrorMessage("Passwords do not match.");
+      return;
+    }
+
+    try {
+      const response = await fetch("http://localhost:5001/api/users/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          Email: email,
+          Password: password,
+          UserType: "basic", // This could be dynamic based on user type
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Failed to register");
+      }
+
+      setSuccessMessage("User registered successfully!");
+      setErrorMessage(null);
+      setEmail("");
+      setPassword("");
+      setConfirmPassword("");
+    } catch (error: any) {
+      setErrorMessage(error.message || "An error occurred");
+      setSuccessMessage(null);
+    }
   };
 
   return (
@@ -20,6 +59,16 @@ export default function RegistrationPage() {
         <Typography component="h1" variant="h5">
           Register
         </Typography>
+        {errorMessage && (
+          <Alert severity="error" sx={{ mt: 2 }}>
+            {errorMessage}
+          </Alert>
+        )}
+        {successMessage && (
+          <Alert severity="success" sx={{ mt: 2 }}>
+            {successMessage}
+          </Alert>
+        )}
         <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
           <TextField
             margin="normal"
@@ -29,6 +78,8 @@ export default function RegistrationPage() {
             label="Email Address"
             name="email"
             autoComplete="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
           />
           <TextField
             margin="normal"
@@ -39,6 +90,8 @@ export default function RegistrationPage() {
             type="password"
             id="password"
             autoComplete="new-password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
           />
           <TextField
             margin="normal"
@@ -49,6 +102,8 @@ export default function RegistrationPage() {
             type="password"
             id="confirmPassword"
             autoComplete="new-password"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
           />
           <Button
             type="submit"
