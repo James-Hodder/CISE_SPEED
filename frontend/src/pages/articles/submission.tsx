@@ -15,7 +15,8 @@ export default function SubmitPage() {
     date: "",
     content: "",
     tags: "",
-    isApproved: false,
+    isApproved: false, // Default value
+    isAnalysis: false, // Default value
     rating: "",
   });
 
@@ -25,7 +26,8 @@ export default function SubmitPage() {
   };
 
   const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setArticle({ ...article, isApproved: e.target.checked });
+    const { name, checked } = e.target;
+    setArticle({ ...article, [name]: checked });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -44,6 +46,17 @@ export default function SubmitPage() {
         newArticle
       );
       alert("Article submitted successfully!");
+      // Reset form after successful submission
+      setArticle({
+        title: "",
+        author: "",
+        date: "",
+        content: "",
+        tags: "",
+        isApproved: false,
+        isAnalysis: false, // Resetting isAnalysis
+        rating: "",
+      });
     } catch (error) {
       console.error("There was an error submitting the article!", error);
     }
@@ -59,7 +72,7 @@ export default function SubmitPage() {
         gap: 2,
         maxWidth: 600,
         margin: "auto",
-        mt: 4,
+        mt: 8, // Increased margin-top to move the form further down
       }}
     >
       <TextField
@@ -105,11 +118,22 @@ export default function SubmitPage() {
       <FormControlLabel
         control={
           <Checkbox
+            name="isApproved"
             checked={article.isApproved}
             onChange={handleCheckboxChange}
           />
         }
         label="Approved"
+      />
+      <FormControlLabel
+        control={
+          <Checkbox
+            name="isAnalysis"
+            checked={article.isAnalysis}
+            onChange={handleCheckboxChange}
+          />
+        }
+        label="Analysis"
       />
       <TextField
         label="Rating"

@@ -110,6 +110,7 @@ export const getServerSideProps: GetServerSideProps = async () => {
         tags: article.tags,
         isApproved: article.isApproved,
         rating: article.rating,
+        // Remove isAnalysis since you're handling data manually
       })),
     },
   };

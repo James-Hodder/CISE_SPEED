@@ -8,6 +8,7 @@ const ArticleSchema = new mongoose.Schema({
   content: String,
   tags: [String],
   isApproved: Boolean,
+  isAnalysis: Boolean,
   rating: Number,
 });
 

@@ -1,3 +1,4 @@
+// pages/articles/deletion.tsx
 import { GetServerSideProps, NextPage } from "next";
 import {
   Table,
@@ -60,7 +61,6 @@ const DeletionPage: NextPage<ArticlesProps> = ({ articles }) => {
               <TableCell>Author</TableCell>
               <TableCell>Date</TableCell>
               <TableCell>Rating</TableCell>
-              <TableCell>Approved</TableCell>
               <TableCell>Tags</TableCell>
               <TableCell>Actions</TableCell>
             </TableRow>
@@ -75,7 +75,6 @@ const DeletionPage: NextPage<ArticlesProps> = ({ articles }) => {
                   {/* Ensures yyyy-mm-dd format */}
                 </TableCell>
                 <TableCell>{article.rating}</TableCell>
-                <TableCell>{article.isApproved ? "Yes" : "No"}</TableCell>
                 <TableCell>{article.tags.join(", ")}</TableCell>
                 <TableCell>
                   <Button
@@ -114,7 +113,8 @@ export const getServerSideProps: GetServerSideProps<
         date: new Date(article.date).toISOString().split("T")[0], // Convert Date to a string in yyyy-mm-dd format
         content: article.content,
         tags: article.tags,
-        isApproved: article.isApproved,
+        isApproved: article.isApproved, // Include in the data but not displayed
+        isAnalysis: article.isAnalysis, // Include isAnalysis property
         rating: article.rating,
       })),
     },
