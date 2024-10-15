@@ -1,9 +1,52 @@
-// pages/login/login.tsx
-import React from "react";
+import React, { useState } from "react";
 import { Box, Button, TextField, Typography } from "@mui/material";
+import axios from "axios";
 import Link from "next/link";
 
 const Login: React.FC = () => {
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
+  const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
+
+  // Handle form input change
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  // Handle form submission
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setErrorMessage("");
+    setSuccessMessage("");
+
+    const { email, password } = formData;
+
+    try {
+      const response = await axios.post(
+        "http://localhost:5000/api/users/login",
+        {
+          Email: email,
+          Password: password,
+        }
+      );
+
+      if (response.status === 200) {
+        setSuccessMessage("Login successful!");
+        setFormData({ email: "", password: "" });
+      }
+    } catch (error: any) {
+      if (error.response && error.response.data) {
+        setErrorMessage(error.response.data.message);
+      } else {
+        setErrorMessage("Error logging in.");
+      }
+    }
+  };
+
   return (
     <Box
       display="flex"
@@ -15,16 +58,47 @@ const Login: React.FC = () => {
       <Typography variant="h4" gutterBottom>
         Login
       </Typography>
-      <form noValidate autoComplete="off">
-        <TextField label="Email" variant="outlined" margin="normal" fullWidth />
+      <form noValidate autoComplete="off" onSubmit={handleSubmit}>
+        <TextField
+          label="Email"
+          variant="outlined"
+          margin="normal"
+          fullWidth
+          name="email"
+          value={formData.email}
+          onChange={handleChange}
+          required
+        />
         <TextField
           label="Password"
           type="password"
           variant="outlined"
           margin="normal"
           fullWidth
+          name="password"
+          value={formData.password}
+          onChange={handleChange}
+          required
         />
-        <Button variant="contained" color="primary" fullWidth>
+        {errorMessage && (
+          <Typography
+            color="error"
+            variant="body1"
+            style={{ marginTop: "16px" }}
+          >
+            {errorMessage}
+          </Typography>
+        )}
+        {successMessage && (
+          <Typography
+            color="primary"
+            variant="body1"
+            style={{ marginTop: "16px" }}
+          >
+            {successMessage}
+          </Typography>
+        )}
+        <Button type="submit" variant="contained" color="primary" fullWidth>
           Login
         </Button>
       </form>

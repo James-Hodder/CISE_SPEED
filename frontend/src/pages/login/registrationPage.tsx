@@ -1,10 +1,65 @@
-import React from "react";
+import React, { useState } from "react";
 import { Container, TextField, Button, Typography, Box } from "@mui/material";
+import axios from "axios"; // Import axios for API requests
 
 export default function RegistrationPage() {
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  // State to handle form inputs
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+    confirmPassword: "",
+  });
+
+  // State to handle error messages
+  const [errorMessage, setErrorMessage] = useState("");
+
+  // Handle form input change
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  // Handle form submission
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    // Handle registration logic here (e.g., send data to API)
+
+    const { email, password, confirmPassword } = formData;
+
+    // Simple validation for matching passwords
+    if (password !== confirmPassword) {
+      setErrorMessage("Passwords do not match");
+      return;
+    }
+
+    try {
+      // Send a POST request to the register endpoint
+      const response = await axios.post(
+        "http://localhost:5000/api/users/register",
+        {
+          Email: email,
+          Password: password,
+          UserType: "user", // Assuming default user type, can be changed as needed
+        }
+      );
+
+      // Handle successful registration
+      if (response.status === 201) {
+        alert("User registered successfully!");
+        setFormData({
+          email: "",
+          password: "",
+          confirmPassword: "",
+        });
+        setErrorMessage("");
+      }
+    } catch (error: any) {
+      // Handle errors, e.g., user already exists
+      if (error.response && error.response.data) {
+        setErrorMessage(error.response.data.message);
+      } else {
+        setErrorMessage("Error registering user.");
+      }
+    }
   };
 
   return (
@@ -28,6 +83,8 @@ export default function RegistrationPage() {
             id="email"
             label="Email Address"
             name="email"
+            value={formData.email}
+            onChange={handleChange}
             autoComplete="email"
           />
           <TextField
@@ -38,6 +95,8 @@ export default function RegistrationPage() {
             label="Password"
             type="password"
             id="password"
+            value={formData.password}
+            onChange={handleChange}
             autoComplete="new-password"
           />
           <TextField
@@ -48,8 +107,17 @@ export default function RegistrationPage() {
             label="Confirm Password"
             type="password"
             id="confirmPassword"
+            value={formData.confirmPassword}
+            onChange={handleChange}
             autoComplete="new-password"
           />
+
+          {errorMessage && (
+            <Typography color="error" sx={{ mt: 1 }}>
+              {errorMessage}
+            </Typography>
+          )}
+
           <Button
             type="submit"
             fullWidth
