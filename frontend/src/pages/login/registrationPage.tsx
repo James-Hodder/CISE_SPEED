@@ -23,9 +23,9 @@ export default function RegistrationPage() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
+          UserType: "User", // This could be dynamic based on user type
           Email: email,
           Password: password,
-          UserType: "basic", // This could be dynamic based on user type
         }),
       });
 
