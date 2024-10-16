@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const User = require("../../models/Users");
 
+//Iteration 3
 // Route to get all users
 router.get("/", async (req, res) => {
   try {
@@ -12,6 +13,7 @@ router.get("/", async (req, res) => {
   }
 });
 
+//Iteration 3
 //This is just checking if an Email is there
 //Not needed for the frontend just testing
 // Route to get a specific user by Email
@@ -27,6 +29,7 @@ router.get("/:email", async (req, res) => {
   }
 });
 
+//Iteration 3
 // Route to register a new user
 router.post("/register", async (req, res) => {
   const { UserType, Email, Password } = req.body;
@@ -52,6 +55,7 @@ router.post("/register", async (req, res) => {
   }
 });
 
+//Iteration 3
 // Route to log in an existing user
 router.post("/login", async (req, res) => {
   const { Email, Password } = req.body;

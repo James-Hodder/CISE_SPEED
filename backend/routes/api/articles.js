@@ -18,6 +18,46 @@ router.get("/", (req, res) => {
     );
 });
 
+//Iteration 3
+// Route to fetch articles where isApproved is false and isAnalysis is true
+router.get("/moderation", async (req, res) => {
+  try {
+    const articles = await Article.find({
+      isApproved: false,
+      isAnalysis: true,
+    });
+    res.json(articles);
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching articles." });
+  }
+});
+
+//Iteration 3
+// Route to update isApproved status of an article
+router.put("/approve/:id", async (req, res) => {
+  const { id } = req.params;
+  const { isApproved } = req.body;
+
+  try {
+    const updatedArticle = await Article.findByIdAndUpdate(
+      id,
+      { isApproved },
+      { new: true }
+    );
+
+    if (!updatedArticle) {
+      return res.status(404).json({ message: "Article not found." });
+    }
+
+    res.json({
+      message: "Article status updated successfully.",
+      updatedArticle,
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Error updating article status." });
+  }
+});
+
 // @route GET api/articles/:id
 // @description Get single article by custom id
 // @access Public
