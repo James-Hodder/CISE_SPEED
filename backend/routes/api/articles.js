@@ -64,8 +64,11 @@ router.put("/approve/:id", async (req, res) => {
 // @route GET api/articles/:id
 // @description Get single article by id
 // @access Public
+// @route GET api/articles/:id
+// @description Get single article by custom id
 router.get("/:id", (req, res) => {
-  Article.findOne({ id: req.params.id }) // Changed from findById to findOne
+  const articleId = parseInt(req.params.id, 10); // Convert id to a number
+  Article.findOne({ id: articleId }) // Fetch by custom id
     .then((article) => {
       if (!article) {
         return res.status(404).json({ noarticlefound: "No Article found" });
@@ -106,6 +109,8 @@ router.post("/", express.json(), async (req, res) => {
 // @route PUT api/articles/:id
 // @description Update article by custom id
 // @access Public
+// @route PUT api/articles/:id
+// @description Update article by custom id
 router.put("/:id", (req, res) => {
   const articleId = parseInt(req.params.id, 10); // Convert id to a number
 
@@ -119,6 +124,16 @@ router.put("/:id", (req, res) => {
     .catch((err) =>
       res.status(400).json({ error: "Unable to update the Database" })
     );
+});
+
+// Route to fetch articles where isAnalysis is false
+router.get("/analysis/pending", async (req, res) => {
+  try {
+    const articles = await Article.find({ isAnalysis: false });
+    res.json(articles);
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching articles." });
+  }
 });
 
 // @route DELETE api/articles/:id

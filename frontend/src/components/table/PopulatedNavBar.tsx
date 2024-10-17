@@ -31,6 +31,7 @@ const PopulatedNavBar: FC<PopulatedNavBarProps> = ({ toggleColorMode }) => {
                 <NavItem route="/articles/submission">Submit articles</NavItem>
                 <NavItem route="/articles/deletion">Delete articles</NavItem>
                 <NavItem route="/moderation">Moderate articles</NavItem>
+                <NavItem route="/analysis">Analysis articles</NavItem>
               </NavDropdown>
             </NavItem>
           </Box>
