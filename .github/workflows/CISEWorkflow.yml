@@ -6,13 +6,15 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-    steps: 
+    steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Install dependencies
-        run: npm install
-
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '10.8.2' # Change this to the Node.js version your app uses
+          
       - name: Install dependencies in frontend
         run: |
           echo "installing dependecies in frontend"
