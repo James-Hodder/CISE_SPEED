@@ -10,7 +10,7 @@ import {
 export default function Home() {
   return (
     <Container maxWidth="md" sx={{ mt: 4 }}>
-      <Typography variant="h3" gutterBottom>
+      <Typography variant="h3" gutterBottom component="h1">
         Welcome to SPEED - Software Practice Empirical Evidence Database
       </Typography>
 
