@@ -15,13 +15,17 @@ jobs:
 
       - name: Install dependencies in frontend
         run: |
+          echo "installing dependecies in frontend"
           cd frontend
           npm install
+          echo "installed dependecies in frontend"
 
       - name: Install dependencies in backend
         run: |
+          echo "installing dependecies in backend"
           cd backend
           npm install
+          echo "installed dependecies in backend"
       
    
       - name: Run tests
