@@ -1,0 +1,40 @@
+name: workflow
+
+on: push
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps: 
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Install dependencies in frontend
+        run: |
+          cd frontend
+          npm install
+
+      - name: Install dependencies in backend
+        run: |
+          cd backend
+          npm install
+      
+   
+      - name: Run tests
+        run: npm test 
+
+      - name: start the frontend
+        run: |
+          cd frontend
+          npm run dev
+
+      - name: start the backend
+        run: |
+          cd backend
+          npm start
+
+      
