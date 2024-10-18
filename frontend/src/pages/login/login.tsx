@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { Box, Button, TextField, Typography } from "@mui/material";
 import axios from "axios";
 import Link from "next/link";
+import { AuthContext } from "../../components/Auth/AuthContext"; // Import AuthContext
 
 const Login: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -10,6 +11,8 @@ const Login: React.FC = () => {
   });
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
+
+  const { login } = useContext(AuthContext); // Access login function from AuthContext
 
   // Handle form input change
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -36,6 +39,7 @@ const Login: React.FC = () => {
 
       if (response.status === 200) {
         setSuccessMessage("Login successful!");
+        login(email); // Update the context with the logged-in user's email
         setFormData({ email: "", password: "" });
       }
     } catch (error: any) {

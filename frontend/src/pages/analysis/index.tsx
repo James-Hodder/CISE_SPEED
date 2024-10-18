@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { Article } from "../../types/Article"; // Import your Article type
+import { Article } from "../../types/Article";
 import Link from "next/link";
 import {
   Button,
@@ -10,9 +10,11 @@ import {
   ListItem,
   ListItemText,
 } from "@mui/material";
+import { useRouter } from "next/router"; // To handle active state
 
 export default function AnalysisPage() {
   const [articles, setArticles] = useState<Article[]>([]);
+  const router = useRouter(); // Get the current route
 
   useEffect(() => {
     // Fetch articles where isAnalysis is false
@@ -67,17 +69,26 @@ export default function AnalysisPage() {
                   article.date
                 ).toLocaleDateString()}`}
               />
-              <Button variant="contained" color="primary" sx={{ mr: 2 }}>
-                <Link href={`/analysis/${article.id}`} passHref>
+              <Link href={`/analysis/${article.id}`} passHref>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  sx={{ mr: 2 }}
+                  className={
+                    router.pathname === `/analysis/${article.id}`
+                      ? "active"
+                      : ""
+                  }
+                >
                   Edit
-                </Link>
-              </Button>
+                </Button>
+              </Link>
               <Button
                 variant="outlined"
                 color="secondary"
                 onClick={() => handleSetAnalysisTrue(article.id)}
               >
-                Set to Analysis True
+                Approve
               </Button>
             </ListItem>
           ))
@@ -85,6 +96,12 @@ export default function AnalysisPage() {
           <Typography>No articles found pending analysis.</Typography>
         )}
       </List>
+      <style jsx>{`
+        .active {
+          background-color: #1976d2;
+          color: white;
+        }
+      `}</style>
     </Box>
   );
 }
