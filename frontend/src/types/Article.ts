@@ -7,5 +7,6 @@ export interface Article {
   content: string;
   tags: string[]; // Array of strings for tags
   isApproved: boolean; // Boolean for approval status
+  isAnalysis: Boolean;
   rating: number; // Assuming rating is a number
 }

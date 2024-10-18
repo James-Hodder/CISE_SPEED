@@ -2,7 +2,7 @@
 body {
   margin: 0;
   padding: 0;
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
   background-color: #f0f4f8; /* Light background */
   color: #1e3a8a; /* Dark blue for text */
   line-height: 1.6;
@@ -18,7 +18,12 @@ body {
 }
 
 /* Typography */
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   margin: 0.5em 0;
   color: #1e3a8a; /* Dark blue for headers */
 }
@@ -98,7 +103,10 @@ label {
 }
 
 /* Input Styling */
-input[type="text"], input[type="email"], input[type="password"], textarea {
+input[type="text"],
+input[type="email"],
+input[type="password"],
+textarea {
   width: 100%;
   padding: 0.75em 1em;
   margin-top: 0.25em;
@@ -108,7 +116,8 @@ input[type="text"], input[type="email"], input[type="password"], textarea {
 }
 
 /* Submit Button Styling */
-button[type="submit"], .btn {
+button[type="submit"],
+.btn {
   background-color: #1e3a8a; /* Darker blue */
   color: #fff;
   padding: 0.75em 1.5em;
@@ -121,7 +130,8 @@ button[type="submit"], .btn {
 }
 
 /* Submit Button Hover Effect */
-button[type="submit"]:hover, .btn:hover {
+button[type="submit"]:hover,
+.btn:hover {
   background-color: #3b82f6; /* Brighter blue */
   transform: translateY(-2px); /* Slight lift */
 }
@@ -133,7 +143,8 @@ button[type="submit"]:hover, .btn:hover {
     padding: 1.5em;
   }
 
-  .formItem, .buttonItem {
+  .formItem,
+  .buttonItem {
     font-size: 1em;
   }
 }

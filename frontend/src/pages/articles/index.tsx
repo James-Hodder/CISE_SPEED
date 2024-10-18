@@ -10,8 +10,10 @@ import {
   Paper,
   TextField,
   Typography,
+  Button,
 } from "@mui/material";
 import { useState } from "react";
+import Link from "next/link"; // Import Link from Next.js
 import { Article } from "../../types/Article"; // Import your Article type
 
 type ArticlesProps = {
@@ -27,7 +29,7 @@ export default function Articles({ articles }: ArticlesProps) {
     (article) =>
       article.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       article.author.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      new Date(article.date).toLocaleDateString().includes(searchQuery)
+      new Date(article.date).toLocaleDateString("en-GB").includes(searchQuery) // Explicitly set date format (en-GB for dd/mm/yyyy)
   );
 
   return (
@@ -56,6 +58,7 @@ export default function Articles({ articles }: ArticlesProps) {
               <TableCell>Date</TableCell>
               <TableCell>Rating</TableCell>
               <TableCell>Tags</TableCell>
+              <TableCell>Actions</TableCell> {/* Add Actions column */}
             </TableRow>
           </TableHead>
           <TableBody>
@@ -64,10 +67,19 @@ export default function Articles({ articles }: ArticlesProps) {
                 <TableCell>{article.title}</TableCell>
                 <TableCell>{article.author}</TableCell>
                 <TableCell>
-                  {new Date(article.date).toLocaleDateString()}
+                  {new Date(article.date).toLocaleDateString("en-GB")}{" "}
+                  {/* Ensure consistent date format */}
                 </TableCell>
                 <TableCell>{article.rating}</TableCell>
                 <TableCell>{article.tags.join(", ")}</TableCell>
+                <TableCell>
+                  {/* Link to article detail page */}
+                  <Link href={`/articles/${article.id}`}>
+                    <Button variant="contained" color="primary">
+                      Read More
+                    </Button>
+                  </Link>
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>
@@ -98,6 +110,7 @@ export const getServerSideProps: GetServerSideProps = async () => {
         tags: article.tags,
         isApproved: article.isApproved,
         rating: article.rating,
+        // Remove isAnalysis since you're handling data manually
       })),
     },
   };

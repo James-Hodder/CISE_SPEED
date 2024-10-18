@@ -1,7 +1,5 @@
 const express = require("express");
 const router = express.Router();
-
-// Load articles model
 const Article = require("../../models/Articles");
 
 // @route GET api/articles/test
@@ -20,11 +18,57 @@ router.get("/", (req, res) => {
     );
 });
 
+//Iteration 3
+// Route to fetch articles where isApproved is false and isAnalysis is true
+router.get("/moderation", async (req, res) => {
+  try {
+    const articles = await Article.find({
+      isApproved: false,
+      isAnalysis: true,
+    });
+    res.json(articles);
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching articles." });
+  }
+});
+
+//Iteration 3
+// Route to update isApproved status of an article
+router.put("/approve/:id", async (req, res) => {
+  const { id } = req.params;
+  const { isApproved } = req.body;
+
+  try {
+    const updatedArticle = await Article.findByIdAndUpdate(
+      id,
+      { isApproved },
+      { new: true }
+    );
+
+    if (!updatedArticle) {
+      return res.status(404).json({ message: "Article not found." });
+    }
+
+    res.json({
+      message: "Article status updated successfully.",
+      updatedArticle,
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Error updating article status." });
+  }
+});
+
+// @route GET api/articles/:id
+// @description Get single article by custom id
+// @access Public
 // @route GET api/articles/:id
 // @description Get single article by id
 // @access Public
+// @route GET api/articles/:id
+// @description Get single article by custom id
 router.get("/:id", (req, res) => {
-  Article.findById(req.params.id)
+  const articleId = parseInt(req.params.id, 10); // Convert id to a number
+  Article.findOne({ id: articleId }) // Fetch by custom id
     .then((article) => {
       if (!article) {
         return res.status(404).json({ noarticlefound: "No Article found" });
@@ -37,7 +81,7 @@ router.get("/:id", (req, res) => {
 });
 
 // @route POST api/articles
-// @description Add/save article and auto-increment ID
+// @description Add/save article with auto-incrementing id
 // @access Public
 router.post("/", express.json(), async (req, res) => {
   try {
@@ -45,12 +89,12 @@ router.post("/", express.json(), async (req, res) => {
     const lastArticle = await Article.findOne().sort({ id: -1 });
 
     // Format the date to 'YYYY-MM-DD'
-    const formattedDate = new Date(req.body.date).toISOString().split("T")[0]; // Keep only the date part
+    const formattedDate = new Date(req.body.date).toISOString().split("T")[0];
 
     const newArticle = new Article({
       ...req.body,
-      date: formattedDate, // Now it will be stored as a string in 'YYYY-MM-DD' format
-      id: lastArticle ? lastArticle.id + 1 : 1, // Increment the highest ID, or set to 1 if no articles exist
+      date: formattedDate, // Store the date as 'YYYY-MM-DD' string
+      id: lastArticle ? lastArticle.id + 1 : 1, // Auto-increment ID
     });
 
     await newArticle.save();
@@ -63,10 +107,14 @@ router.post("/", express.json(), async (req, res) => {
 });
 
 // @route PUT api/articles/:id
-// @description Update article
+// @description Update article by custom id
 // @access Public
+// @route PUT api/articles/:id
+// @description Update article by custom id
 router.put("/:id", (req, res) => {
-  Article.findByIdAndUpdate(req.params.id, req.body, { new: true })
+  const articleId = parseInt(req.params.id, 10); // Convert id to a number
+
+  Article.findOneAndUpdate({ id: articleId }, req.body, { new: true })
     .then((article) => {
       if (!article) {
         return res.status(404).json({ noarticlefound: "No Article found" });
@@ -78,18 +126,32 @@ router.put("/:id", (req, res) => {
     );
 });
 
+// Route to fetch articles where isAnalysis is false
+router.get("/analysis/pending", async (req, res) => {
+  try {
+    const articles = await Article.find({ isAnalysis: false });
+    res.json(articles);
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching articles." });
+  }
+});
+
 // @route DELETE api/articles/:id
-// @description Delete article by id
+// @description Delete article by custom id
 // @access Public
 router.delete("/:id", (req, res) => {
-  Article.findByIdAndRemove(req.params.id)
+  const articleId = parseInt(req.params.id, 10); // Convert id to a number
+
+  Article.findOneAndRemove({ id: articleId })
     .then((article) => {
       if (!article) {
-        return res.status(404).json({ noarticlefound: "No such article" });
+        return res.status(404).json({ noarticlefound: "No Article found" });
       }
       res.json({ msg: "Article entry deleted successfully" });
     })
-    .catch((err) => res.status(404).json({ error: "No such article" }));
+    .catch((err) =>
+      res.status(500).json({ error: "Failed to delete article" })
+    );
 });
 
 module.exports = router;
