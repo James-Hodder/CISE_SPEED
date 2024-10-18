@@ -57,7 +57,7 @@ export default function Articles({ articles }: ArticlesProps) {
               <TableCell>Author</TableCell>
               <TableCell>Date</TableCell>
               <TableCell>Rating</TableCell>
-              <TableCell>Tags</TableCell>
+              <TableCell>Keywords</TableCell>
               <TableCell>Actions</TableCell> {/* Add Actions column */}
             </TableRow>
           </TableHead>
