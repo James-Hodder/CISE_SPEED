@@ -82,6 +82,7 @@ export default function RegistrationPage() {
             onChange={(e) => setEmail(e.target.value)}
           />
           <TextField
+            data-testid ="passTest"
             margin="normal"
             required
             fullWidth
@@ -106,7 +107,7 @@ export default function RegistrationPage() {
             onChange={(e) => setConfirmPassword(e.target.value)}
           />
           <Button
-            lable= "register"
+            
             type="submit"
             fullWidth
             variant="contained"
