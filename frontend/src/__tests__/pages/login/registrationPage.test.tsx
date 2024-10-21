@@ -50,14 +50,14 @@ describe('Registration Page Input Fields', () => {
         const passwordInput = screen.getAllByLabelText(/password/i)[0]
         fireEvent.change(passwordInput, { target: { value: 'thisIsAPassword' } })
         
-        // confirm password event
-        // const confPasswordInput = screen.getAllByLabelText(/confirm Password/i)[0]
-        // fireEvent.change(confPasswordInput, { target: { value: 'thisIsAPassword' } })
+        // confirm password event comment out for bellow test to force wrong password
+        const confPasswordInput = screen.getAllByLabelText(/confirm Password/i)[0]
+        fireEvent.change(confPasswordInput, { target: { value: 'thisIsAPassword' } })
 
-        // // error confirm password event
-        const errorConfPasswordInput = screen.getAllByLabelText(/confirm Password/i)[0]
-        fireEvent.change(errorConfPasswordInput, { target: { value: 'I dont match' } })
-        console.log("passwords do not match")
+        // error confirm password event uncomment to test
+        // const errorConfPasswordInput = screen.getAllByLabelText(/confirm Password/i)[0]
+        // fireEvent.change(errorConfPasswordInput, { target: { value: 'I dont match' } })
+        // console.log("passwords do not match")
        
         // click the submission button event
         fireEvent.click(screen.getByRole('button', { name: /register/i}));
