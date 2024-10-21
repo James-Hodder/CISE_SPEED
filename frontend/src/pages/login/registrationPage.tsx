@@ -106,6 +106,7 @@ export default function RegistrationPage() {
             onChange={(e) => setConfirmPassword(e.target.value)}
           />
           <Button
+            lable= "register"
             type="submit"
             fullWidth
             variant="contained"

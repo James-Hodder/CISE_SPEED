@@ -13,7 +13,7 @@
     "jsx": "preserve",
     "incremental": true,
     "paths": {
-      "@/*": ["src/*"] // Ensure this matches your structure
+      "@/*": ["./src/*"] // Ensure this matches your structure
     }
   },
   "include": ["src/**/*.ts", "src/**/*.tsx"],

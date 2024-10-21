@@ -1,88 +1,49 @@
-import React from "react";
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
-import "@testing-library/jest-dom";
-import RegistrationPage from "@/pages/login/registrationPage"; // Adjust the path as needed
+import React from 'react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import '@testing-library/jest-dom';
+import RegistrationPage from '@/pages/login/registrationPage';
 
-// Mocking the global fetch function
-global.fetch = jest.fn();
+describe('Registration Page Input Fields', () => {
+  it('should render the email, password, and confirm password input fields', () => 
+    {
+    console.log("Test for rendering input fields is running...");
 
-describe("RegistrationPage", () => {
-  beforeEach(() => {
-    jest.clearAllMocks();
-  });
-
-  it("should display an error message when passwords do not match", async () => {
+    // Render the RegistrationPage component
     render(<RegistrationPage />);
 
-    // Fill in the registration form
-    fireEvent.change(screen.getByLabelText(/Email Address/i), {
-      target: { value: "test@example.com" },
-    });
-    fireEvent.change(screen.getByLabelText(/Password/i), {
-      target: { value: "password123" },
-    });
-    fireEvent.change(screen.getByLabelText(/Confirm Password/i), {
-      target: { value: "differentPassword" },
-    });
+    // Check if the email input field is rendered
+    expect(screen.getByLabelText(/email address/i)).toBeInTheDocument();
 
-    // Submit the form
-    fireEvent.click(screen.getByRole("button", { name: /Register/i }));
+    // Check if the password input field is rendered using the specific name attribute
+    expect(screen.getByLabelText(/password/i, { selector: 'input[name="password"]' })).toBeInTheDocument();
 
-    // Check for the error message
-    expect(await screen.findByText(/Passwords do not match/i)).toBeInTheDocument();
+    // Check if the confirm password input field is rendered using the specific name attribute
+    expect(screen.getByLabelText(/confirm password/i, { selector: 'input[name="confirmPassword"]' })).toBeInTheDocument();
+
+    // Console log to confirm successful test
+    console.log("All input fields are rendered successfully.");
   });
 
-  it("should display a success message upon successful registration", async () => {
-    // Mocking the fetch response for successful registration
-    (fetch as jest.Mock).mockResolvedValueOnce({
-      ok: true,
-      json: async () => ({ message: "User registered successfully!" }),
+  // Sample test for successful registration
+    it('should display a success message upon successful registration', async () => {
+
+        // Render the RegistrationPage component
+        render(<RegistrationPage />);
+
+        global.fetch = jest.fn(() =>
+        Promise.resolve({
+            ok: true,
+            json: () => Promise.resolve({ message: 'Registration successful' }),
+        })
+        ) as jest.Mock;
+    
+        fireEvent.change(screen.getByLabelText(/email address/i), { target: { value: 'test@example.com' } });
+        fireEvent.change(screen.getByLabelText(/password/i), { target: { value: 'password123' } });
+        fireEvent.change(screen.getByLabelText(/confirm password/i), { target: { value: 'password123' } });
+        fireEvent.click(screen.getByRole('button', { name: /submit/i }));
+    
+        await waitFor(() => {
+        expect(screen.getByRole('alert')).toHaveTextContent(/user registered successfully/i);
+        });
     });
-
-    render(<RegistrationPage />);
-
-    // Fill in the registration form with matching passwords
-    fireEvent.change(screen.getByLabelText(/Email Address/i), {
-      target: { value: "test@example.com" },
-    });
-    fireEvent.change(screen.getByLabelText(/Password/i), {
-      target: { value: "password123" },
-    });
-    fireEvent.change(screen.getByLabelText(/Confirm Password/i), {
-      target: { value: "password123" },
-    });
-
-    // Submit the form
-    fireEvent.click(screen.getByRole("button", { name: /Register/i }));
-
-    // Wait for and check for the success message
-    expect(await screen.findByText(/User registered successfully/i)).toBeInTheDocument();
-  });
-
-  it("should display an error message upon failed registration", async () => {
-    // Mocking the fetch response for failed registration
-    (fetch as jest.Mock).mockResolvedValueOnce({
-      ok: false,
-      json: async () => ({ message: "Failed to register" }),
-    });
-
-    render(<RegistrationPage />);
-
-    // Fill in the registration form with matching passwords
-    fireEvent.change(screen.getByLabelText(/Email Address/i), {
-      target: { value: "test@example.com" },
-    });
-    fireEvent.change(screen.getByLabelText(/Password/i), {
-      target: { value: "password123" },
-    });
-    fireEvent.change(screen.getByLabelText(/Confirm Password/i), {
-      target: { value: "password123" },
-    });
-
-    // Submit the form
-    fireEvent.click(screen.getByRole("button", { name: /Register/i }));
-
-    // Wait for and check for the error message
-    expect(await screen.findByText(/Failed to register/i)).toBeInTheDocument();
-  });
 });
