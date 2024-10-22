@@ -63,5 +63,4 @@ jobs:
 
       # Concurrently run backend and frontend builds
       - name: Run backend and frontend concurrently
-        run: |
-          concurrently "npm run start-ci --prefix backend" "npm run build --prefix frontend"
+        run: concurrently "npm run start-ci --prefix backend" "npm run build --prefix frontend"
