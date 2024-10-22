@@ -47,25 +47,25 @@ jobs:
 
       # Backend Steps
       - name: Install backend dependencies
-        working-directory: ./backend
+        working-directory: ../backend
         run: npm install
 
       - name: Set up environment variables
         run: echo "MONGODB_URI=${{ secrets.MONGODB_URI }}" >> $GITHUB_ENV
 
       - name: Build backend
-        working-directory: ./backend
+        working-directory: ../backend
         run: npm run build
 
       # Frontend Steps
       - name: Install frontend dependencies
-        working-directory: ./frontend
+        working-directory: ../frontend
         run: npm install
 
       - name: Run frontend tests
-        working-directory: ./frontend
+        working-directory: ../frontend
         run: npm test
 
       - name: Build frontend
-        working-directory: ./frontend
+        working-directory: ../frontend
         run: npm run build
