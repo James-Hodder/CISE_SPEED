@@ -1,9 +1,8 @@
 const express = require("express");
 const router = express.Router();
-const User = require("../../models/Users");
+const User = require("../models/User");
 
-//Iteration 3
-// Route to get all users
+// Get all users
 router.get("/", async (req, res) => {
   try {
     const users = await User.find(); // Fetch all users from the database
@@ -13,10 +12,7 @@ router.get("/", async (req, res) => {
   }
 });
 
-//Iteration 3
-//This is just checking if an Email is there
-//Not needed for the frontend just testing
-// Route to get a specific user by Email
+// Check if a user exists by Email
 router.get("/:email", async (req, res) => {
   try {
     const user = await User.findOne({ Email: req.params.email });
@@ -29,8 +25,7 @@ router.get("/:email", async (req, res) => {
   }
 });
 
-//Iteration 3
-// Route to register a new user
+// Register a new user
 router.post("/register", async (req, res) => {
   const { UserType, Email, Password } = req.body;
 
@@ -45,7 +40,7 @@ router.post("/register", async (req, res) => {
     const newUser = new User({
       UserType,
       Email,
-      Password,
+      Password, // Password is stored as plain text (no hashing)
     });
 
     await newUser.save();
@@ -55,24 +50,24 @@ router.post("/register", async (req, res) => {
   }
 });
 
-//Iteration 3
-// Route to log in an existing user
+// Log in an existing user
 router.post("/login", async (req, res) => {
   const { Email, Password } = req.body;
 
   try {
-    // Check if the user exists
     const user = await User.findOne({ Email });
     if (!user) {
       return res.status(400).json({ message: "User not found." });
     }
 
-    // Check if the password matches
     if (user.Password !== Password) {
       return res.status(400).json({ message: "Invalid password." });
     }
 
-    return res.status(200).json({ message: "Logged in successfully." });
+    return res.status(200).json({
+      message: "Logged in successfully.",
+      userType: user.UserType, // Include the userType in the response
+    });
   } catch (err) {
     return res.status(500).json({ message: "Error logging in." });
   }
