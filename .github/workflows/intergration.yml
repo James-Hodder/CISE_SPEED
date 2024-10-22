@@ -55,19 +55,12 @@ jobs:
         working-directory: ./frontend
         run: npm install
 
-      # Install concurrently globally
-      - name: Install concurrently globally
-        run: npm install -g concurrently
-
-      # Add npm global bin to PATH
-      - name: Add npm global bin to PATH
-        run: echo "$HOME/.npm-global/bin" >> $GITHUB_PATH
-
       # Set up environment variables
       - name: Set up environment variables
         run: echo "MONGODB_URI=${{ secrets.MONGODB_URI }}" >> $GITHUB_ENV
 
-      # Run backend and frontend concurrently
+      # Run backend and frontend concurrently without static export
       - name: Run backend and frontend concurrently
         run: |
           concurrently "npm run start-ci --prefix backend" "npm run build --prefix frontend"
+          
