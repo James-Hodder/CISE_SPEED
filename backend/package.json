@@ -1,12 +1,16 @@
 {
   "name": "backend",
   "version": "1.0.0",
-  "description": "",
+  "description": "Backend service for the project",
   "main": "index.js",
   "scripts": {
+    "build": "echo \"No build step required for this backend\"",
     "start": "node app.js",
+    "start-ci": "npm run build && npm run migrate && node app.js", 
     "app": "nodemon app.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest",  
+    "lint": "eslint .",  
+    "migrate": "echo \"Run database migrations here\""  
   },
   "author": "Johnson Seto",
   "license": "ISC",
@@ -19,6 +23,8 @@
     "mongoose": "^7.4.3"
   },
   "devDependencies": {
-    "nodemon": "^3.0.1"
+    "nodemon": "^3.0.1",
+    "eslint": "^8.0.0",  
+    "jest": "^29.0.0"  
   }
 }
