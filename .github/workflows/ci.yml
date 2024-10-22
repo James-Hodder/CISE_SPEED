@@ -3,7 +3,7 @@ name: CI/CD Pipeline
 on:
   push:
     branches:
-      - vercel-deployment # Update to the branch you're working on
+      - vercel-deployment # Or any other branch you want this workflow to run on
   pull_request:
     branches:
       - vercel-deployment # Ensure pull requests also run this workflow
@@ -13,18 +13,18 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [20.x] # Update to Node.js 20.x
+        node-version: [20.x] # Explicitly set Node.js 20.x to avoid deprecation warnings
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3 # This will automatically use Node.js 20.x
+        uses: actions/checkout@v3 # This action now runs on Node.js 20.x
 
       - name: Set up Node.js
-        uses: actions/setup-node@v3 # Use Node.js 20.x instead of older versions
+        uses: actions/setup-node@v3 # Explicitly using Node.js 20.x
         with:
           node-version: ${{ matrix.node-version }}
 
       - name: Cache Node.js dependencies
-        uses: actions/cache@v3 # Still compatible with Node.js 20.x
+        uses: actions/cache@v3 # Compatible with Node.js 20.x
         with:
           path: |
             **/node_modules
@@ -50,11 +50,11 @@ jobs:
 
       - name: Build backend
         working-directory: ./backend
-        run: npm run build # Add a build command if necessary, or replace with start command
+        run: npm run build # Replace with actual build/start command if needed
 
       - name: Run backend tests
         working-directory: ./backend
-        run: npm test # Add a test script in your backend's package.json
+        run: npm test # Add backend test script in package.json
 
 
-      # Optional: Deployment steps (e.g., to Vercel or other platforms)
+      # Optional: Add deployment steps if needed (e.g., Vercel or Heroku)
