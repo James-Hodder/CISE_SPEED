@@ -1,4 +1,4 @@
-name: intergration
+name: integration
 
 on:
   push:
@@ -31,7 +31,7 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
-          
+
     strategy:
       matrix:
         node-version: [20.14.0]
@@ -50,22 +50,15 @@ jobs:
         working-directory: ./backend
         run: npm install
 
-      - name: Set up environment variables
-        run: echo "MONGODB_URI=${{ secrets.MONGODB_URI }}" >> $GITHUB_ENV
-
-      - name: Build backend
-        working-directory: ./backend
-        run: npm run start-ci
-
-      # Frontend Steps
       - name: Install frontend dependencies
         working-directory: ./frontend
         run: npm install
 
-      - name: Run frontend tests
-        working-directory: ./frontend
-        run: npm test
+      - name: Set up environment variables
+        run: echo "MONGODB_URI=${{ secrets.MONGODB_URI }}" >> $GITHUB_ENV
 
-      - name: Build frontend
-        working-directory: ./frontend
-        run: npm run build
+      # Concurrently run backend and frontend builds
+      - name: Run backend and frontend concurrently
+        run: |
+          npm install concurrently --save-dev
+          concurrently "npm run start-ci --prefix backend" "npm run build --prefix frontend"
