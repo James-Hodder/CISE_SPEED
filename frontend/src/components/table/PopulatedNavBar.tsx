@@ -11,7 +11,7 @@ interface PopulatedNavBarProps {
 
 const PopulatedNavBar: FC<PopulatedNavBarProps> = ({ toggleColorMode }) => {
   return (
-    <AppBar position="static">
+    <AppBar position="static" role="navigation">
       <Container maxWidth="xl">
         {/* Ensures content spans full width, adjust maxWidth if needed */}
         <Toolbar disableGutters>
