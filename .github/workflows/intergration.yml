@@ -45,22 +45,29 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
-      # Install dependencies
+      # Install backend dependencies
       - name: Install backend dependencies
         working-directory: ./backend
         run: npm install
 
+      # Install frontend dependencies
       - name: Install frontend dependencies
         working-directory: ./frontend
         run: npm install
 
+      # Install concurrently globally
+      - name: Install concurrently globally
+        run: npm install -g concurrently
+
+      # Add npm global bin to PATH
+      - name: Add npm global bin to PATH
+        run: echo "$HOME/.npm-global/bin" >> $GITHUB_PATH
+
+      # Set up environment variables
       - name: Set up environment variables
         run: echo "MONGODB_URI=${{ secrets.MONGODB_URI }}" >> $GITHUB_ENV
 
-      # Check if concurrently is installed
-      - name: Check `concurrently` installation
-        run: npm install concurrently --save-dev && npm list concurrently --depth=0
-
-      # Concurrently run backend and frontend builds
+      # Run backend and frontend concurrently
       - name: Run backend and frontend concurrently
-        run: concurrently "npm run start-ci --prefix backend" "npm run build --prefix frontend"
+        run: |
+          concurrently "npm run start-ci --prefix backend" "npm run build --prefix frontend"
