@@ -3,8 +3,18 @@ name: CI
 on:
   push:
     branches:
+      - testing-login
       - main
+      - Next-development
+      - Jam
+      - JamesDev
+      - DWJ
       - development
+      - KishanDev
+      - MaseTheStudent-patch-1
+      - anson
+      - main2
+      - vercel-deployment
   workflow_call:
 
 jobs:
