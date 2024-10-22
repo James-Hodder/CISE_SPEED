@@ -3,6 +3,10 @@ import { Box, Button, TextField, Typography } from "@mui/material";
 import axios from "axios";
 import Link from "next/link";
 import { AuthContext } from "../../components/Auth/AuthContext"; // Import AuthContext
+import { useRouter } from "next/router"; // Import useRouter to handle redirects
+
+// Use the environment variable for the backend URL
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 const Login: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -13,6 +17,7 @@ const Login: React.FC = () => {
   const [successMessage, setSuccessMessage] = useState("");
 
   const { login } = useContext(AuthContext); // Access login function from AuthContext
+  const router = useRouter(); // Initialize useRouter
 
   // Handle form input change
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -29,18 +34,19 @@ const Login: React.FC = () => {
     const { email, password } = formData;
 
     try {
-      const response = await axios.post(
-        "http://localhost:5000/api/users/login",
-        {
-          Email: email,
-          Password: password,
-        }
-      );
+      const response = await axios.post(`${API_URL}/users/login`, {
+        Email: email,
+        Password: password,
+      });
 
       if (response.status === 200) {
+        const { userType } = response.data; // Assuming userType is returned from the backend
         setSuccessMessage("Login successful!");
-        login(email); // Update the context with the logged-in user's email
+        login(email, userType); // Pass both email and userType to login function
         setFormData({ email: "", password: "" });
+
+        // Redirect the user to the home page after successful login
+        router.push("/");
       }
     } catch (error: any) {
       if (error.response && error.response.data) {
@@ -62,6 +68,13 @@ const Login: React.FC = () => {
       <Typography variant="h4" gutterBottom>
         Login
       </Typography>
+      <Typography variant="h6" gutterBottom>
+        Email:moderation@example.com Password:SecurePassword123
+      </Typography>
+      <Typography variant="h6" gutterBottom>
+        Email:analysis@example.com Password:AnalysisPassword789
+      </Typography>
+
       <form noValidate autoComplete="off" onSubmit={handleSubmit}>
         <TextField
           label="Email"

@@ -17,7 +17,6 @@ router.get("/moderation", async (req, res) => {
   try {
     const articles = await Article.find({
       isApproved: false,
-      isAnalysis: true,
     });
     res.json(articles);
   } catch (error) {
@@ -25,42 +24,71 @@ router.get("/moderation", async (req, res) => {
   }
 });
 
-// Route to update isApproved status of an article
-router.put("/approve/:id", async (req, res) => {
-  const { id } = req.params;
-  const { isApproved } = req.body;
-
+// Route to approve an article by custom id
+router.put("/:id/approve", async (req, res) => {
+  const articleId = req.params.id; // Now using _id instead of custom id
+  const { isApproved } = req.body; // Get isApproved value from the request body
   try {
     const updatedArticle = await Article.findByIdAndUpdate(
-      id,
-      { isApproved },
-      { new: true }
+      articleId, // Using _id directly
+      { isApproved }, // Use the isApproved value from the request
+      { new: true } // Return the updated document
     );
-
     if (!updatedArticle) {
-      return res.status(404).json({ message: "Article not found." });
+      return res.status(404).json({ message: "Article not found" });
     }
-
-    res.json({
-      message: "Article status updated successfully.",
-      updatedArticle,
-    });
+    res.json(updatedArticle);
   } catch (error) {
-    res.status(500).json({ message: "Error updating article status." });
+    res
+      .status(500)
+      .json({ message: "Error updating article approval status." });
   }
 });
 
-// Route to get a single article by custom id
-router.get("/:id", (req, res) => {
-  const articleId = parseInt(req.params.id, 10);
-  Article.findOne({ id: articleId })
-    .then((article) => {
-      if (!article) {
-        return res.status(404).json({ noarticlefound: "No Article found" });
-      }
-      res.json(article);
-    })
-    .catch(() => res.status(404).json({ noarticlefound: "No Article found" }));
+// Route to update an article by _id
+router.put("/:id", async (req, res) => {
+  const articleId = req.params.id; // Get the article's _id from the URL
+  try {
+    const updatedArticle = await Article.findByIdAndUpdate(
+      articleId, // Using _id directly
+      req.body, // Use the request body to update the article fields
+      { new: true, runValidators: true } // Return the updated document and validate
+    );
+    if (!updatedArticle) {
+      return res.status(404).json({ message: "Article not found" });
+    }
+    res.json(updatedArticle);
+  } catch (error) {
+    res.status(500).json({ message: "Error updating article." });
+  }
+});
+
+// Route to delete an article by _id
+router.delete("/:id", async (req, res) => {
+  const articleId = req.params.id;
+  try {
+    const deletedArticle = await Article.findByIdAndDelete(articleId);
+    if (!deletedArticle) {
+      return res.status(404).json({ message: "Article not found" });
+    }
+    res.json({ message: "Article deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Error deleting article." });
+  }
+});
+
+// Route to get a single article by custom id (_id in MongoDB)
+router.get("/:id", async (req, res) => {
+  const articleId = req.params.id;
+  try {
+    const article = await Article.findById(articleId); // Find by MongoDB _id
+    if (!article) {
+      return res.status(404).json({ message: "Article not found" });
+    }
+    res.json(article);
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching article." });
+  }
 });
 
 // Route to add/save article with auto-incrementing id
@@ -84,42 +112,36 @@ router.post("/", express.json(), async (req, res) => {
   }
 });
 
-// Route to update article by custom id
-router.put("/:id", (req, res) => {
-  const articleId = parseInt(req.params.id, 10);
-  Article.findOneAndUpdate({ id: articleId }, req.body, { new: true })
-    .then((article) => {
-      if (!article) {
-        return res.status(404).json({ noarticlefound: "No Article found" });
-      }
-      res.json({ msg: "Updated successfully", article });
-    })
-    .catch(() =>
-      res.status(400).json({ error: "Unable to update the Database" })
+// Route to approve an article for analysis by _id
+router.put("/:id/approveAnalysis", async (req, res) => {
+  const articleId = req.params.id;
+  const { isAnalysis } = req.body; // Get isAnalysis value from the request body
+  try {
+    const updatedArticle = await Article.findByIdAndUpdate(
+      articleId,
+      { isAnalysis }, // Update the isAnalysis field
+      { new: true }
     );
+    if (!updatedArticle) {
+      return res.status(404).json({ message: "Article not found" });
+    }
+    res.json(updatedArticle);
+  } catch (error) {
+    res.status(500).json({ message: "Error approving article for analysis." });
+  }
 });
 
-// Route to fetch articles where isAnalysis is false
+// Route to fetch articles where isApproved is true and isAnalysis is false
 router.get("/analysis/pending", async (req, res) => {
   try {
-    const articles = await Article.find({ isAnalysis: false });
+    const articles = await Article.find({
+      isApproved: true,
+      isAnalysis: false,
+    });
     res.json(articles);
   } catch (error) {
     res.status(500).json({ message: "Error fetching articles." });
   }
-});
-
-// Route to delete article by custom id
-router.delete("/:id", (req, res) => {
-  const articleId = parseInt(req.params.id, 10);
-  Article.findOneAndRemove({ id: articleId })
-    .then((article) => {
-      if (!article) {
-        return res.status(404).json({ noarticlefound: "No Article found" });
-      }
-      res.json({ msg: "Article entry deleted successfully" });
-    })
-    .catch(() => res.status(500).json({ error: "Failed to delete article" }));
 });
 
 module.exports = router;

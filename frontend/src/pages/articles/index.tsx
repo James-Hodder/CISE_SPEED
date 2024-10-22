@@ -1,4 +1,3 @@
-// pages/articles/index.tsx
 import { GetServerSideProps } from "next";
 import {
   Table,
@@ -15,6 +14,10 @@ import {
 import { useState } from "react";
 import Link from "next/link"; // Import Link from Next.js
 import { Article } from "../../types/Article"; // Import your Article type
+import axios from "axios";
+
+// Use the environment variable for the backend URL
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 type ArticlesProps = {
   articles: Article[]; // Define the type for your articles
@@ -63,7 +66,8 @@ export default function Articles({ articles }: ArticlesProps) {
           </TableHead>
           <TableBody>
             {filteredArticles.map((article) => (
-              <TableRow key={article.id}>
+              <TableRow key={article._id}>
+                {/* Use MongoDB _id */}
                 <TableCell>{article.title}</TableCell>
                 <TableCell>{article.author}</TableCell>
                 <TableCell>
@@ -74,7 +78,7 @@ export default function Articles({ articles }: ArticlesProps) {
                 <TableCell>{article.tags.join(", ")}</TableCell>
                 <TableCell>
                   {/* Link to article detail page */}
-                  <Link href={`/articles/${article.id}`}>
+                  <Link href={`/articles/${article._id}`}>
                     <Button variant="contained" color="primary">
                       Read More
                     </Button>
@@ -91,29 +95,36 @@ export default function Articles({ articles }: ArticlesProps) {
 
 // Fetch articles server-side, only including those that are approved
 export const getServerSideProps: GetServerSideProps = async () => {
-  const res = await fetch(
-    "https://backend-2rq43ugo4-johnsons-projects-22e77e85.vercel.app/articles"
-  ); // Fetch articles from your API
-  const articles = await res.json();
+  try {
+    const res = await axios.get(`${API_URL}/articles`);
 
-  // Only pass articles where `isApproved` is true
-  const approvedArticles = articles.filter(
-    (article: any) => article.isApproved
-  );
+    const articles = res.data;
 
-  return {
-    props: {
-      articles: approvedArticles.map((article: any) => ({
-        id: article.id,
-        title: article.title,
-        author: article.author,
-        date: new Date(article.date).toISOString(),
-        content: article.content,
-        tags: article.tags,
-        isApproved: article.isApproved,
-        rating: article.rating,
-        // Remove isAnalysis since you're handling data manually
-      })),
-    },
-  };
+    const approvedArticles = articles.filter(
+      (article: any) => article.isApproved
+    );
+
+    return {
+      props: {
+        articles: approvedArticles.map((article: any) => ({
+          _id: article._id, // Use MongoDB _id for linking
+          id: article.id, // Custom ID if needed for display
+          title: article.title,
+          author: article.author,
+          date: new Date(article.date).toISOString(),
+          content: article.content,
+          tags: article.tags,
+          isApproved: article.isApproved,
+          rating: article.rating,
+        })),
+      },
+    };
+  } catch (error) {
+    console.error("Error fetching articles:", error);
+    return {
+      props: {
+        articles: [], // Return an empty array on failure
+      },
+    };
+  }
 };

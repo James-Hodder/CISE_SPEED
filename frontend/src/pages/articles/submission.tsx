@@ -1,12 +1,9 @@
 import React, { useState } from "react";
-import {
-  TextField,
-  Button,
-  Box,
-  FormControlLabel,
-  Checkbox,
-} from "@mui/material";
+import { TextField, Button, Box } from "@mui/material";
 import axios from "axios";
+
+// Use the environment variable for the backend URL
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export default function SubmitPage() {
   const [article, setArticle] = useState({
@@ -25,11 +22,6 @@ export default function SubmitPage() {
     setArticle({ ...article, [name]: value });
   };
 
-  const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, checked } = e.target;
-    setArticle({ ...article, [name]: checked });
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -41,10 +33,7 @@ export default function SubmitPage() {
     };
 
     try {
-      const response = await axios.post(
-        "http://localhost:5000/api/articles",
-        newArticle
-      );
+      const response = await axios.post(`${API_URL}/articles`, newArticle);
       alert("Article submitted successfully!");
       // Reset form after successful submission
       setArticle({
@@ -115,26 +104,7 @@ export default function SubmitPage() {
         value={article.tags}
         onChange={handleChange}
       />
-      <FormControlLabel
-        control={
-          <Checkbox
-            name="isApproved"
-            checked={article.isApproved}
-            onChange={handleCheckboxChange}
-          />
-        }
-        label="Approved"
-      />
-      <FormControlLabel
-        control={
-          <Checkbox
-            name="isAnalysis"
-            checked={article.isAnalysis}
-            onChange={handleCheckboxChange}
-          />
-        }
-        label="Analysis"
-      />
+      {/* The "Approved" and "Analysis" checkboxes are hidden by removing them */}
       <TextField
         label="Rating"
         name="rating"

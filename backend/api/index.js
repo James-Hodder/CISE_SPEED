@@ -1,37 +1,49 @@
-// const express = require("express");
-// const app = express();
-
-// app.get("/", (req, res) => res.send("Express on Vercel"));
-
-// app.listen(5000, () => console.log("Server ready on port 5000."));
-
-// module.exports = app;
 const express = require("express");
 const mongoose = require("mongoose");
-const articlesRouter = require("../route/articles"); // Import the routes
+const articlesRouter = require("../route/articles"); // Import the articles routes
+const usersRouter = require("../route/user"); // Import the users routes
 
 const app = express();
+const cors = require("cors");
+
+// Allow requests from your frontend (localhost:3000) during development
+app.use(
+  cors({
+    origin: "*", // Adjust the origin as needed
+    methods: ["GET", "POST", "PUT", "DELETE"], // Define allowed methods
+    credentials: true, // If you want to allow credentials (cookies, etc.)
+  })
+);
+
 app.use(express.json()); // Middleware for parsing JSON
 
 // MongoDB connection
 require("dotenv").config();
 
-mongoose
-  .connect(process.env.MONGODB_URI, {
+let isConnected; // Variable to store connection state
+
+const connectToDatabase = async () => {
+  if (isConnected) return Promise.resolve();
+
+  isConnected = mongoose.connect(process.env.MONGODB_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
-  })
-  .then(() => console.log("Connected to MongoDB"))
-  .catch((err) => console.error("Error connecting to MongoDB:", err));
+  });
+
+  return isConnected;
+};
+
+app.use(async (req, res, next) => {
+  await connectToDatabase(); // Ensure MongoDB is connected for every request
+  next();
+});
 
 // Routes
-app.use("/articles", articlesRouter);
+app.use("/articles", articlesRouter); // Articles routes
+app.use("/users", usersRouter); // User routes
 
 // Basic route
 app.get("/", (req, res) => res.send("Express on Vercel"));
 
-// Server listen
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server ready on port ${PORT}`));
-
+// Export for serverless function
 module.exports = app;
