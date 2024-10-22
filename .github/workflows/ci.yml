@@ -1,0 +1,60 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - vercel-deployment # Replace with your current branch
+  pull_request:
+    branches:
+      - vercel-deployment # Runs on PRs to this branch
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [16.x, 18.x] # Specify Node.js versions
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Cache Node.js dependencies
+        uses: actions/cache@v3
+        with:
+          path: |
+            **/node_modules
+          key: ${{ runner.os }}-node-${{ matrix.node-version }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-${{ matrix.node-version }}
+
+      - name: Install dependencies (frontend)
+        working-directory: ./frontend
+        run: npm install
+
+      - name: Install dependencies (backend)
+        working-directory: ./backend
+        run: npm install
+
+      - name: Build frontend
+        working-directory: ./frontend
+        run: npm run build
+
+      - name: Test frontend
+        working-directory: ./frontend
+        run: npm run lint
+
+      - name: Build backend
+        working-directory: ./backend
+        run: npm run build # Add a build command if necessary, or replace with start command
+
+      - name: Run backend tests
+        working-directory: ./backend
+        run: npm test # Add a test script in your backend's package.json
+
+
+      # Optional: Deployment steps (e.g., to Vercel)
