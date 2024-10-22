@@ -91,7 +91,9 @@ export default function Articles({ articles }: ArticlesProps) {
 
 // Fetch articles server-side, only including those that are approved
 export const getServerSideProps: GetServerSideProps = async () => {
-  const res = await fetch("http://localhost:5000/api/articles"); // Fetch articles from your API
+  const res = await fetch(
+    "https://backend-2rq43ugo4-johnsons-projects-22e77e85.vercel.app/articles"
+  ); // Fetch articles from your API
   const articles = await res.json();
 
   // Only pass articles where `isApproved` is true
