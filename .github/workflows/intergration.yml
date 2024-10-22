@@ -55,7 +55,7 @@ jobs:
 
       - name: Build backend
         working-directory: ./backend
-        run: npm start
+        run: npm run build
 
       # Frontend Steps
       - name: Install frontend dependencies
@@ -68,4 +68,4 @@ jobs:
 
       - name: Build frontend
         working-directory: ./frontend
-        run: npm run dev
+        run: npm run build
