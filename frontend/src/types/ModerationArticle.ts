@@ -9,3 +9,4 @@ export interface ModerationArticle {
   isApproved: boolean;
   isAnalysis: boolean;
 }
+//Random comment

@@ -3,28 +3,28 @@ name: CI/CD Pipeline
 on:
   push:
     branches:
-      - vercel-deployment # Replace with your current branch
+      - vercel-deployment # Update to the branch you're working on
   pull_request:
     branches:
-      - vercel-deployment # Runs on PRs to this branch
+      - vercel-deployment # Ensure pull requests also run this workflow
 
 jobs:
   setup:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [16.x, 18.x] # Specify Node.js versions
+        node-version: [20.x] # Update to Node.js 20.x
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v3 # This will automatically use Node.js 20.x
 
       - name: Set up Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v3 # Use Node.js 20.x instead of older versions
         with:
           node-version: ${{ matrix.node-version }}
 
       - name: Cache Node.js dependencies
-        uses: actions/cache@v3
+        uses: actions/cache@v3 # Still compatible with Node.js 20.x
         with:
           path: |
             **/node_modules
@@ -57,4 +57,4 @@ jobs:
         run: npm test # Add a test script in your backend's package.json
 
 
-      # Optional: Deployment steps (e.g., to Vercel)
+      # Optional: Deployment steps (e.g., to Vercel or other platforms)
