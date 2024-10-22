@@ -1,4 +1,4 @@
-name: CI
+name: intergration
 
 on:
   push:
@@ -48,7 +48,7 @@ jobs:
       # Backend Steps
       - name: Install backend dependencies
         working-directory: ./backend
-        run: npm ci
+        run: npm intergration
 
       - name: Set up environment variables
         run: echo "MONGODB_URI=${{ secrets.MONGODB_URI }}" >> $GITHUB_ENV
@@ -64,7 +64,7 @@ jobs:
       # Frontend Steps
       - name: Install frontend dependencies
         working-directory: ./frontend
-        run: npm ci
+        run: npm intergration
 
       - name: Run frontend tests
         working-directory: ./frontend
